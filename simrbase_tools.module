@@ -1,0 +1,17 @@
+<?php
+
+function simrbase_tools_form_alter(&$form, &$form_state, $form_id) {
+  //$simrbase_tools_form->hookForm();
+  if ($form_id == 'views_exposed_form' && $form['#action'] == '/search/rosetta-stone-transcript-mapper') {
+    $form['SIMRbase_uniquename']['#type'] = 'textarea';
+    $form['other_uniquename']['#type'] = 'textarea';
+	$names = array('other_uniquename','SIMRbase_uniquename');
+	foreach ($names as $key){
+	   if (array_key_exists($key, $form_state['input']) and !is_null($form_state['input'][$key])){
+	      $form_state['input'][$key] = preg_replace('/[\s,]+/',' ',trim($form_state['input'][$key]));
+	    }
+	}
+  }
+  return $form;
+}
+?>
