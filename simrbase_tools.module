@@ -2,16 +2,45 @@
 
 function simrbase_tools_form_alter(&$form, &$form_state, $form_id) {
   //$simrbase_tools_form->hookForm();
-  if ($form_id == 'views_exposed_form' && $form['#action'] == '/search/rosetta-stone-transcript-mapper') {
+ //  if ($form_id == 'views_exposed_form' && $form['#action'] == '/search/rosetta-stone-transcript-mapper') {
+ if ($form['#id'] == 'views-exposed-form-rosetta-stone-transcript-mapper-page'){
+
+
     $form['SIMRbase_uniquename']['#type'] = 'textarea';
     $form['other_uniquename']['#type'] = 'textarea';
-	$names = array('other_uniquename','SIMRbase_uniquename');
-	foreach ($names as $key){
-	   if (array_key_exists($key, $form_state['input']) and !is_null($form_state['input'][$key])){
-	      $form_state['input'][$key] = preg_replace('/[\s,]+/',' ',trim($form_state['input'][$key]));
-	    }
+    $names = array('other_uniquename','SIMRbase_uniquename');
+    foreach ($names as $key){
+        if (array_key_exists($key, $form_state['input']) and !is_null($form_state['input'][$key])){
+	  $form_state['input'][$key] = preg_replace('/[\s,]+/',' ',trim($form_state['input'][$key]));
 	}
+     }
+     $sql = 'SELECT name,description from chado.db where db_id in (select distinct other_db_id from chado.rosetta_stone_transcript_mapper ) order by description ASC';
+     $results = db_query($sql);
+
+     $form['other_db_name']['#options']=NULL;
+     $form['other_db_name']['#options']['All']='- Any -';
+//     $form['other_db_name']['#default_value']['0']='All'; // want to set default selected value, but i cnt get it to work
+     foreach ($results as $r){
+        $form['other_db_name']['#options'][$r->name] = $r->description;
+    }
+
   }
+ 
   return $form;
 }
+
+
+//function views_views_pre_execute(&$view) {
+ //  drupal_set_message($view->name);
+//   if($view->name=="rosetta_stone_transcript_mapper") {
+//   drupal_set_message($view->build_info['query'][0]);
+//    drupal_set_message($view->build_info['query_args'][0]);
+//    drupal_set_message($view->build_info['query_args'][1]);
+//if($view->build_info['query_args'][1]==0) {
+//       dpm($view,'view');
+////        $view->build_info['query'] = chado_query("SELECT d.description from {db} d where d.db_id in (select distinct r.other_db_id from {rosetta_stone_transcript_mapper} r )");
+//}
+//   }
+//}
+
 ?>
