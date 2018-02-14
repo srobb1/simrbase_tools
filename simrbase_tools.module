@@ -31,7 +31,7 @@ function simrbase_tools_form_alter(&$form, &$form_state, $form_id) {
      $gid_str  = implode("','", $gids);
      $gid_str = "'".$gid_str."'";
 //dpm($gid_str,'str');
-     $sql = 'SELECT distinct common_name from chado.organism o, chado_organism co , node_access na , role r where o.organism_id = co.organism_id and co.nid = na.nid and o.organism_id in (select distinct organism_id from chado.chado_search_gene_search) and na.gid = r.rid and  r.name in ( '. $gid_str . '  ) order by common_name ASC';
+     $sql = 'SELECT distinct common_name from chado.organism o, chado_organism co , node_access na , role r where o.organism_id = co.organism_id and co.nid = na.nid and o.organism_id in (select distinct o.organism_id from chado.chado_search_gene_search) and na.gid = r.rid and  r.name in ( '. $gid_str . '  ) order by common_name ASC';
 
     $results = db_query($sql);
      $form['common_name']['#options']=NULL;
@@ -42,7 +42,7 @@ function simrbase_tools_form_alter(&$form, &$form_state, $form_id) {
 
 
     $sql_analysis = "SELECT distinct analysis from chado.chado_search_gene_search   
-  where analysis similar to ( SELECT  '(' ||  string_agg(genus, '|') || ')%' as genus_list from chado.organism o, chado_organism co , node_access na , role r where o.organism_id = co.organism_id and co.nid = na.nid and o.organism_id in (select distinct organism_id from chado.chado_search_gene_search) and na.gid = r.rid and  r.name in (". $gid_str ." ) ) and analysis similar to (SELECT '%(' || string_agg(species, '|') || ')%' as species_list from chado.organism o, chado_organism co , node_access na , role r where o.organism_id = co.organism_id and co.nid = na.nid and o.organism_id in (select distinct organism_id from chado.chado_search_gene_search) and na.gid = r.rid and  r.name in (" . $gid_str . " )) order by analysis ASC";
+  where analysis similar to ( SELECT  '(' ||  string_agg(genus, '|') || ')%' as genus_list from chado.organism o, chado_organism co , node_access na , role r where o.organism_id = co.organism_id and co.nid = na.nid and o.common_name in (select distinct ccgs.organism_common_name from chado.chado_search_gene_search ccgs) and na.gid = r.rid and  r.name in (". $gid_str ." ) ) and analysis similar to (SELECT '%(' || string_agg(species, '|') || ')%' as species_list from chado.organism o, chado_organism co , node_access na , role r where o.organism_id = co.organism_id and co.nid = na.nid and o.common_name in (select distinct ccgs2.organism_common_name from chado.chado_search_gene_search ccgs2) and na.gid = r.rid and  r.name in (" . $gid_str . " )) order by analysis ASC";
     $results = db_query($sql_analysis);
     if($form['#id'] == 'views-exposed-form-t-page'){
        $form['name']['#options']=NULL;
