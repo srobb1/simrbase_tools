@@ -27,6 +27,12 @@ function simrbase_tools_form_alter(&$form, &$form_state, $form_id) {
   }elseif($form['#id'] == 'views-exposed-form-t-page' or $form['#id'] == 'views-exposed-form-gene-search-by-loc-page'){
      if($form['#id'] == 'views-exposed-form-t-page'){
        $form['combine']['#type'] = 'textarea';
+        $names = array('combine');
+        foreach ($names as $key){
+          if (array_key_exists($key, $form_state['input']) and !is_null($form_state['input'][$key])){
+            $form_state['input'][$key] = preg_replace('/[\s,]+/',' ',trim($form_state['input'][$key]));
+          }
+        }
      }
      global $user;
      $gids = $user->roles;
