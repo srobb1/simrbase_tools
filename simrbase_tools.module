@@ -24,6 +24,18 @@ function simrbase_tools_form_alter(&$form, &$form_state, $form_id) {
         $form['other_db_name']['#options'][$r->name] = $r->description;
     }
 
+  }
+  // Allow for more id in the query
+  elseif($form['#id'] == 'views-exposed-form-search-an-zeng-single-cell-page'){
+     $form['anz-uniquename']['#type'] = 'textarea';
+     $form['anz-uniquename']['#maxlength'] = NULL;
+     $names = array('anz-uniquename');
+     foreach ($names as $key){
+        if (array_key_exists($key, $form_state['input']) and !is_null($form_state['input'][$key])){
+          $form_state['input'][$key] = preg_replace('/[\s,]+/',' ',trim($form_state['input'][$key]));
+        }
+      }
+
   }elseif($form['#id'] == 'views-exposed-form-t-page' or $form['#id'] == 'views-exposed-form-gene-search-by-loc-page'){
      global $user;
      $gids = $user->roles;
