@@ -25,6 +25,9 @@ function simrbase_tools_form_alter(&$form, &$form_state, $form_id) {
     }
 
   }elseif($form['#id'] == 'views-exposed-form-t-page' or $form['#id'] == 'views-exposed-form-gene-search-by-loc-page'){
+     if($form['#id'] == 'views-exposed-form-t-page'){
+       $form['combine']['#type'] = 'textarea';
+     }
      global $user;
      $gids = $user->roles;
 //dpm($gids,'gids');
