@@ -36,9 +36,15 @@ function simrbase_tools_form_alter(&$form, &$form_state, $form_id) {
         }
       }
 
+  }elseif($form['#id'] == 'views-exposed-form-t-views-data-export-1' or $form['#id'] == 'views-exposed-form-t-views-data-export-2'){
+        $form['combine']['#type'] = 'textarea';
+        $form['combine']['#maxlength'] = 500;
+
   }elseif($form['#id'] == 'views-exposed-form-t-page' or $form['#id'] == 'views-exposed-form-gene-search-by-loc-page'){
      if($form['#id'] == 'views-exposed-form-t-page'){
         $form['combine']['#type'] = 'textarea';
+        $form['combine']['#maxlength'] = 500;
+
         $names = array('combine');
         foreach ($names as $key){
           if (array_key_exists($key, $form_state['input']) and !is_null($form_state['input'][$key])){
